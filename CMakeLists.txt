@@ -57,6 +57,12 @@ if (${Boost_FOUND})
     link_directories(${Boost_LIBRARY_DIRS})
 endif()
 
-# # Add the respective subdirectories of the project
+# Create path variables
+set(TCP_SOCKET ${PROJECT_SOURCE_DIR}/src/tcp_socket)
+set(TCP_CLIENT ${PROJECT_SOURCE_DIR}/src/tcp_client)
+set(TCP_SERVER ${PROJECT_SOURCE_DIR}/src/tcp_server)
+
+# Add the respective subdirectories of the project
+add_subdirectory(src/tcp_socket)
 add_subdirectory(src/tcp_client)
 add_subdirectory(src/tcp_server)
