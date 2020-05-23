@@ -62,7 +62,19 @@ set(TCP_SOCKET ${PROJECT_SOURCE_DIR}/src/tcp_socket)
 set(TCP_CLIENT ${PROJECT_SOURCE_DIR}/src/tcp_client)
 set(TCP_SERVER ${PROJECT_SOURCE_DIR}/src/tcp_server)
 
-# Add the respective subdirectories of the project
+# Add project modules subdirectories
 add_subdirectory(src/tcp_socket)
 add_subdirectory(src/tcp_client)
 add_subdirectory(src/tcp_server)
+
+# Option to build examples
+option(BUILD_EXAMPLES "Build examples" OFF)
+
+if(BUILD_EXAMPLES)
+    # Status message
+    message(STATUS "Examples will be built")
+
+    # Add examples subdirectories
+    add_subdirectory(examples/tcp_client)
+    add_subdirectory(examples/tcp_server)
+endif(BUILD_EXAMPLES)
