@@ -4,7 +4,7 @@ namespace network_socket
 {
 	namespace tcp
 	{
-		Server::Server(const unsigned int &t_port) : m_acceptor(m_ioService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), t_port)), m_ongoingAccept(false)
+		Server::Server(const unsigned int &t_port) : m_acceptor(m_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), t_port)), m_ongoingAccept(false)
 		{
 			// 
 			checkDeadline();
@@ -31,7 +31,7 @@ namespace network_socket
 					// 
 					do
 					{
-						m_ioService.run_one();
+						m_ioContext.run_one();
 					} while (m_ongoingAccept);
 
 					// 
@@ -53,7 +53,7 @@ namespace network_socket
 		{
 			disconnect();
 			m_acceptor.close();
-			m_acceptor = boost::asio::ip::tcp::acceptor(m_ioService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), t_port));
+			m_acceptor = boost::asio::ip::tcp::acceptor(m_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), t_port));
 		}
 
 		void Server::acceptHandler(const boost::system::error_code &t_errorCode)

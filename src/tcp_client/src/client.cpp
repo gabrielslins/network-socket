@@ -22,8 +22,7 @@ namespace network_socket
 				if (!m_isSocketConnected)
 				{
 					// 
-					boost::asio::ip::tcp::resolver::query query(t_host, t_port);
-					boost::asio::ip::tcp::resolver::iterator iter = boost::asio::ip::tcp::resolver(m_ioService).resolve(query);
+					boost::asio::ip::tcp::resolver::iterator iter = boost::asio::ip::tcp::resolver(m_ioContext).resolve(query);
 
 					// 
 					m_deadlineTimer.expires_from_now(boost::posix_time::seconds(t_timeoutLimit));
@@ -37,7 +36,7 @@ namespace network_socket
 					// 
 					do
 					{
-						m_ioService.run_one();
+						m_ioContext.run_one();
 					} while (errorCode == boost::asio::error::would_block);
 
 					// 

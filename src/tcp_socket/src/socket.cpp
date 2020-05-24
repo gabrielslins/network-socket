@@ -4,7 +4,7 @@ namespace network_socket
 {
 	namespace tcp
 	{
-		Socket::Socket(void) : m_deadlineTimer(m_ioService), m_isSocketConnected(false), m_ongoingRead(false), m_socket(m_ioService)
+		Socket::Socket(void) : m_ongoingRead(false), m_isSocketConnected(false), m_socket(m_ioContext), m_deadlineTimer(m_ioContext)
 		{
 			// 
 			m_deadlineTimer.expires_at(boost::posix_time::pos_infin);
@@ -42,7 +42,7 @@ namespace network_socket
 					// 
 					do
 					{
-						m_ioService.run_one();
+						m_ioContext.run_one();
 					} while (m_ongoingRead);
 
 					// 
@@ -81,7 +81,7 @@ namespace network_socket
 					// 
 					do
 					{
-						m_ioService.run_one();
+						m_ioContext.run_one();
 					} while (errorCode == boost::asio::error::would_block);
 
 					if (errorCode)
@@ -124,7 +124,7 @@ namespace network_socket
 					// 
 					do
 					{
-						m_ioService.run_one();
+						m_ioContext.run_one();
 					} while (errorCode == boost::asio::error::would_block);
 
 					if (errorCode)

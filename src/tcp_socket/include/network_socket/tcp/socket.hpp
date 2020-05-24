@@ -50,12 +50,12 @@ namespace network_socket
 		protected:
 			virtual void checkDeadline(void) = 0;
 			void readHandler(const boost::system::error_code &t_errorCode, boost::asio::streambuf *t_buffer, const std::size_t &t_bytesTransferred);
-			
-			boost::asio::deadline_timer m_deadlineTimer;
-			boost::asio::io_service m_ioService;
-			bool m_isSocketConnected;
-			bool m_ongoingRead;
-			boost::asio::ip::tcp::socket m_socket;
+
+            bool m_ongoingRead;
+            bool m_isSocketConnected;
+            boost::asio::io_context m_ioContext;
+            boost::asio::ip::tcp::socket m_socket;
+            boost::asio::deadline_timer m_deadlineTimer;
 		};
 	}
 }
