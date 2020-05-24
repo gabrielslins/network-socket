@@ -14,7 +14,7 @@ namespace network_socket
 			Client(void);
 			virtual ~Client(void);
 
-			TcpOperationStatus connect(const std::string &t_host, const std::string &t_port, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
+			TcpOperationStatus connect(const std::string &t_address, const unsigned int &t_port, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
 
 		private:
 			void checkDeadline(void) override;

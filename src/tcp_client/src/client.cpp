@@ -15,13 +15,14 @@ namespace network_socket
 			disconnect();
 		}
 
-		TcpOperationStatus Client::connect(const std::string &t_host, const std::string &t_port, const uint16_t &t_timeoutLimit)
+		TcpOperationStatus Client::connect(const std::string &t_address, const unsigned int &t_port, const uint16_t &t_timeoutLimit)
 		{
 			try
 			{
 				if (!m_isSocketConnected)
 				{
 					// 
+					boost::asio::ip::tcp::resolver::query query(t_address, std::to_string(t_port));
 					boost::asio::ip::tcp::resolver::iterator iter = boost::asio::ip::tcp::resolver(m_ioContext).resolve(query);
 
 					// 
