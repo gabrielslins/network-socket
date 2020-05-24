@@ -47,7 +47,7 @@ if(NOT CMAKE_DEBUG_POSTFIX)
 endif()
 
 # Look for Boost required components
-find_package(Boost 1.66 REQUIRED COMPONENTS system thread regex)
+find_package(Boost 1.72 REQUIRED COMPONENTS system thread regex)
 
 if (${Boost_FOUND})
     # Add Boost include directories to those the compiler uses to search for include files
