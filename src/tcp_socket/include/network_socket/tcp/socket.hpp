@@ -35,6 +35,12 @@ namespace network_socket
 			std::string message;
 		};
 
+		struct Endpoint
+        {
+		    std::string address;
+		    unsigned int port;
+        };
+
 		class Socket
 		{
 		public:
@@ -42,6 +48,12 @@ namespace network_socket
 			virtual ~Socket(void);
 
 			void disconnect(void);
+            Endpoint getLocalEndpoint(void);
+            std::string getLocalEndpointAddress(void);
+            unsigned int getLocalEndpointPort(void);
+            Endpoint getRemoteEndpoint(void);
+            std::string getRemoteEndpointAddress(void);
+            unsigned int getRemoteEndpointPort(void);
 			TcpOperationStatus read(std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT, const size_t &t_maxSize = DEFAULT_REC_MSG_MAX_SIZE, const size_t &t_minSize = DEFAULT_REC_MSG_MIN_SIZE);
 			TcpOperationStatus readLine(std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
 			TcpOperationStatus write(const std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);

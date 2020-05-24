@@ -21,6 +21,48 @@ namespace network_socket
 			m_isSocketConnected = false;
 		}
 
+        Endpoint Socket::getLocalEndpoint(void)
+        {
+		    Endpoint endpoint =
+		    {
+                .address = m_socket.local_endpoint().address().to_string(),
+                .port = m_socket.local_endpoint().port()
+		    };
+
+		    return endpoint;
+        }
+
+        std::string Socket::getLocalEndpointAddress(void)
+        {
+            return m_socket.local_endpoint().address().to_string();
+        }
+
+        unsigned int Socket::getLocalEndpointPort(void)
+        {
+            return m_socket.local_endpoint().port();
+        }
+
+        Endpoint Socket::getRemoteEndpoint(void)
+        {
+            Endpoint endpoint =
+            {
+                    .address = m_socket.remote_endpoint().address().to_string(),
+                    .port = m_socket.remote_endpoint().port()
+            };
+
+            return endpoint;
+        }
+
+        std::string Socket::getRemoteEndpointAddress(void)
+        {
+            return m_socket.remote_endpoint().address().to_string();
+        }
+
+        unsigned int Socket::getRemoteEndpointPort(void)
+        {
+            return m_socket.remote_endpoint().port();
+        }
+
 		TcpOperationStatus Socket::read(std::string &t_message, const uint16_t &t_timeoutLimit, const size_t &t_maxSize, const size_t &t_minSize)
 		{
 			try
