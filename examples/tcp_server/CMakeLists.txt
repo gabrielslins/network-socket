@@ -1,10 +1,6 @@
 # Set executable name
 set(EXEC_NAME example_tcp_server)
 
-# Include module header files
-include_directories(${TCP_SOCKET}/include)
-include_directories(${TCP_SERVER}/include)
-
 # Create executable
 add_executable(${EXEC_NAME} main.cpp)
 

@@ -1,15 +1,11 @@
-# Create path variables
-set(TCP_CLIENT_MINOR include/network_socket/tcp)
-
-# Include module header files
-include_directories(${TCP_SOCKET}/include)
-include_directories(${TCP_CLIENT}/include)
+# Include private header files
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Collect header and source files into variables
-set(TCP_CLIENT_HEADERS "${TCP_CLIENT}/${TCP_CLIENT_MINOR}/client.hpp")
-set(TCP_CLIENT_SOURCES "${TCP_CLIENT}/src/client.cpp")
+set(TCP_CLIENT_HEADERS "")
+set(TCP_CLIENT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/client.cpp")
 
-# Create static and shared libraries with the listed sources collected in the variables
+# Create shared libraries with the listed sources collected in the variables
 add_library(netsock_tcp_client SHARED ${TCP_CLIENT_SOURCES} ${TCP_CLIENT_HEADERS})
 
 # Link the libraries
@@ -22,6 +18,3 @@ install(TARGETS netsock_tcp_client
         RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin"
         LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/bin"
         ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/lib")
-
-install(DIRECTORY ${TCP_CLIENT}/include/ 
-        DESTINATION "${CMAKE_INSTALL_PREFIX}/include")

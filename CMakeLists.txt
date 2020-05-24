@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.16)
 project(network-socket)
 
 # Set default install path
-set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/install" CACHE PATH "Default install path" FORCE)
+set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}" CACHE PATH "Default install path" FORCE)
 # set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/install" CACHE PATH "Default install path")
 
 # Turn on the ability to create folders to organize projects
@@ -57,10 +57,8 @@ if (${Boost_FOUND})
     link_directories(${Boost_LIBRARY_DIRS})
 endif()
 
-# Create path variables
-set(TCP_SOCKET ${PROJECT_SOURCE_DIR}/src/tcp_socket)
-set(TCP_CLIENT ${PROJECT_SOURCE_DIR}/src/tcp_client)
-set(TCP_SERVER ${PROJECT_SOURCE_DIR}/src/tcp_server)
+# Include public headers directory
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Add project modules subdirectories
 add_subdirectory(src/tcp_socket)
