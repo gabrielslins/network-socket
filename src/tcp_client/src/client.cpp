@@ -15,7 +15,7 @@ namespace network_socket
 			disconnect();
 		}
 
-		TcpOperationStatus Client::connect(const std::string &t_address, const unsigned int &t_port, const uint16_t &t_timeoutLimit)
+		OperationStatus Client::connect(const std::string &t_address, const unsigned int &t_port, const uint16_t &t_timeoutLimit)
 		{
 			try
 			{
@@ -48,16 +48,16 @@ namespace network_socket
 
 					// 
 					m_isSocketConnected = true;
-					return TcpOperationStatus{true, ""};
+					return OperationStatus{true, ""};
 				}
 				else
 				{
-					return TcpOperationStatus{false, "Socket already connected"};
+					return OperationStatus{false, "Socket already connected"};
 				}
 			}
 			catch (std::exception &e)
 			{
-				return TcpOperationStatus{false, e.what()};
+				return OperationStatus{false, e.what()};
 			}
 		}
 

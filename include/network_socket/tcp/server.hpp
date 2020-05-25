@@ -14,7 +14,7 @@ namespace network_socket
 			Server(const unsigned int &t_port);
 			virtual ~Server(void);
 
-			TcpOperationStatus acceptConnection(const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
+			OperationStatus acceptConnection(const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
 			void setPort(const unsigned int &t_port);
 
 		private:

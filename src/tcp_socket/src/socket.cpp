@@ -21,49 +21,78 @@ namespace network_socket
 			m_isSocketConnected = false;
 		}
 
-        Endpoint Socket::getLocalEndpoint(void)
+        OperationStatus Socket::getLocalEndpoint(Endpoint &t_endpoint)
         {
-		    Endpoint endpoint =
+            t_endpoint =
 		    {
                 .address = m_socket.local_endpoint().address().to_string(),
                 .port = m_socket.local_endpoint().port()
 		    };
 
-		    return endpoint;
+		    return OperationStatus{true, ""};
         }
 
-        std::string Socket::getLocalEndpointAddress(void)
+        OperationStatus Socket::getLocalEndpointAddress(std::string &t_address)
         {
-            return m_socket.local_endpoint().address().to_string();
+            t_address = m_socket.local_endpoint().address().to_string();
+
+            return OperationStatus{true, ""};
         }
 
-        unsigned int Socket::getLocalEndpointPort(void)
+        OperationStatus Socket::getLocalEndpointPort(unsigned int &t_port)
         {
-            return m_socket.local_endpoint().port();
+            t_port = m_socket.local_endpoint().port();
+
+            return OperationStatus{true, ""};
         }
 
-        Endpoint Socket::getRemoteEndpoint(void)
+        OperationStatus Socket::getRemoteEndpoint(Endpoint &t_endpoint)
         {
-            Endpoint endpoint =
+            if (m_isSocketConnected)
             {
+                t_endpoint =
+                {
                     .address = m_socket.remote_endpoint().address().to_string(),
                     .port = m_socket.remote_endpoint().port()
-            };
+                };
 
-            return endpoint;
+                return OperationStatus{true, ""};
+            }
+		    else
+            {
+                return OperationStatus{false, "Socket not connected!"};
+            }
         }
 
-        std::string Socket::getRemoteEndpointAddress(void)
+        OperationStatus Socket::getRemoteEndpointAddress(std::string &t_address)
         {
-            return m_socket.remote_endpoint().address().to_string();
+            if (m_isSocketConnected)
+            {
+                t_address = m_socket.remote_endpoint().address().to_string();
+
+                return OperationStatus{true, ""};
+            }
+            else
+            {
+                return OperationStatus{false, "Socket not connected!"};
+            }
         }
 
-        unsigned int Socket::getRemoteEndpointPort(void)
+        OperationStatus Socket::getRemoteEndpointPort(unsigned int &t_port)
         {
-            return m_socket.remote_endpoint().port();
+            if (m_isSocketConnected)
+            {
+                t_port = m_socket.remote_endpoint().port();
+
+                return OperationStatus{true, ""};
+            }
+            else
+            {
+                return OperationStatus{false, "Socket not connected!"};
+            }
         }
 
-		TcpOperationStatus Socket::read(std::string &t_message, const uint16_t &t_timeoutLimit, const size_t &t_maxSize, const size_t &t_minSize)
+		OperationStatus Socket::read(std::string &t_message, const uint16_t &t_timeoutLimit, const size_t &t_maxSize, const size_t &t_minSize)
 		{
 			try
 			{
@@ -91,20 +120,20 @@ namespace network_socket
 					t_message = std::string((std::istreambuf_iterator<char>(&buffer)), std::istreambuf_iterator<char>());
 
 					// 
-					return TcpOperationStatus{true, ""};
+					return OperationStatus{true, ""};
 				}
 				else
 				{
-					return TcpOperationStatus{false, "Socket not connected"};
+					return OperationStatus{false, "Socket not connected"};
 				}
 			}
 			catch (std::exception &e)
 			{
-				return TcpOperationStatus{false, e.what()};
+				return OperationStatus{false, e.what()};
 			}
 		}
 
-		TcpOperationStatus Socket::readLine(std::string &t_message, const uint16_t &t_timeoutLimit)
+		OperationStatus Socket::readLine(std::string &t_message, const uint16_t &t_timeoutLimit)
 		{
 			try
 			{
@@ -135,20 +164,20 @@ namespace network_socket
 					std::getline(is, t_message);
 
 					// 
-					return TcpOperationStatus{true, ""};
+					return OperationStatus{true, ""};
 				}
 				else
 				{
-					return TcpOperationStatus{false, "Socket not connected"};
+					return OperationStatus{false, "Socket not connected"};
 				}
 			}
 			catch (std::exception &e)
 			{
-				return TcpOperationStatus{false, e.what()};
+				return OperationStatus{false, e.what()};
 			}
 		}
 
-		TcpOperationStatus Socket::write(const std::string &t_message, const uint16_t &t_timeoutLimit)
+		OperationStatus Socket::write(const std::string &t_message, const uint16_t &t_timeoutLimit)
 		{
 			try
 			{
@@ -175,20 +204,20 @@ namespace network_socket
 					}
 
 					// 
-					return TcpOperationStatus{true, ""};
+					return OperationStatus{true, ""};
 				}
 				else
 				{
-					return TcpOperationStatus{false, "Socket not connected"};
+					return OperationStatus{false, "Socket not connected"};
 				}
 			}
 			catch (std::exception &e)
 			{
-				return TcpOperationStatus{false, e.what()};
+				return OperationStatus{false, e.what()};
 			}
 		}
 
-		TcpOperationStatus Socket::writeLine(const std::string &t_message, const uint16_t &t_timeoutLimit)
+		OperationStatus Socket::writeLine(const std::string &t_message, const uint16_t &t_timeoutLimit)
 		{
 			return write(t_message + "\n", t_timeoutLimit);
 		}

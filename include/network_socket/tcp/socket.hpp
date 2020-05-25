@@ -13,7 +13,7 @@ namespace network_socket
 {
 	namespace tcp
 	{
-		struct TcpOperationStatus
+		struct OperationStatus
 		{
 			bool success;
 			std::string message;
@@ -32,16 +32,16 @@ namespace network_socket
 			virtual ~Socket(void);
 
 			void disconnect(void);
-            Endpoint getLocalEndpoint(void);
-            std::string getLocalEndpointAddress(void);
-            unsigned int getLocalEndpointPort(void);
-            Endpoint getRemoteEndpoint(void);
-            std::string getRemoteEndpointAddress(void);
-            unsigned int getRemoteEndpointPort(void);
-			TcpOperationStatus read(std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT, const size_t &t_maxSize = DEFAULT_REC_MSG_MAX_SIZE, const size_t &t_minSize = DEFAULT_REC_MSG_MIN_SIZE);
-			TcpOperationStatus readLine(std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
-			TcpOperationStatus write(const std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
-			TcpOperationStatus writeLine(const std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
+            OperationStatus getLocalEndpoint(Endpoint &t_endpoint);
+            OperationStatus getLocalEndpointAddress(std::string &t_address);
+            OperationStatus getLocalEndpointPort(unsigned int &t_port);
+            OperationStatus getRemoteEndpoint(Endpoint &t_endpoint);
+            OperationStatus getRemoteEndpointAddress(std::string &t_address);
+            OperationStatus getRemoteEndpointPort(unsigned int &t_port);
+			OperationStatus read(std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT, const size_t &t_maxSize = DEFAULT_REC_MSG_MAX_SIZE, const size_t &t_minSize = DEFAULT_REC_MSG_MIN_SIZE);
+			OperationStatus readLine(std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
+			OperationStatus write(const std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
+			OperationStatus writeLine(const std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
 
 		protected:
 			virtual void checkDeadline(void) = 0;
