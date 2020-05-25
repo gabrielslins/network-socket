@@ -11,9 +11,18 @@ option(BUILD_SHARED_LIBS "Build shared libs" ON)
 # Turn on the ability to create folders to organize projects
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+# Set install location for public headers
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ 
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/include")
+
 # Set default static and shared libraries output path
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib" CACHE PATH "Default static libraries output path")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin" CACHE PATH "Default shared libraries output path")
+
+# Rename generated libraries in DEBUG case
+if(NOT CMAKE_DEBUG_POSTFIX)
+    set(CMAKE_DEBUG_POSTFIX "_d")
+endif()
 
 # Add to path folder containing Find<package>.cmake files
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
@@ -43,11 +52,6 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang")
     message("No Apple Clang flags set")
 else()
     message("No C++ compiler flags set")
-endif()
-
-# Rename generated libraries in DEBUG case
-if(NOT CMAKE_DEBUG_POSTFIX)
-    set(CMAKE_DEBUG_POSTFIX "_d")
 endif()
 
 # Look for Boost required components
