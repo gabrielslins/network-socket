@@ -21,7 +21,7 @@ namespace network_socket
 			m_isSocketConnected = false;
 		}
 
-        OperationStatus Socket::getLocalEndpoint(Endpoint &t_endpoint)
+        OperationStatus Socket::getLocalEndpoint(Endpoint &t_endpoint) const
         {
             if (m_socket.is_open())
             {
@@ -39,7 +39,7 @@ namespace network_socket
             }
         }
 
-        OperationStatus Socket::getLocalEndpointAddress(std::string &t_address)
+        OperationStatus Socket::getLocalEndpointAddress(std::string &t_address) const
         {
             if (m_socket.is_open())
             {
@@ -53,7 +53,7 @@ namespace network_socket
             }
         }
 
-        OperationStatus Socket::getLocalEndpointPort(unsigned int &t_port)
+        OperationStatus Socket::getLocalEndpointPort(unsigned int &t_port) const
         {
             if (m_socket.is_open())
             {
@@ -67,7 +67,7 @@ namespace network_socket
             }
         }
 
-        OperationStatus Socket::getRemoteEndpoint(Endpoint &t_endpoint)
+        OperationStatus Socket::getRemoteEndpoint(Endpoint &t_endpoint) const
         {
             if (m_isSocketConnected)
             {
@@ -85,7 +85,7 @@ namespace network_socket
             }
         }
 
-        OperationStatus Socket::getRemoteEndpointAddress(std::string &t_address)
+        OperationStatus Socket::getRemoteEndpointAddress(std::string &t_address) const
         {
             if (m_isSocketConnected)
             {
@@ -99,7 +99,7 @@ namespace network_socket
             }
         }
 
-        OperationStatus Socket::getRemoteEndpointPort(unsigned int &t_port)
+        OperationStatus Socket::getRemoteEndpointPort(unsigned int &t_port) const
         {
             if (m_isSocketConnected)
             {
@@ -113,14 +113,14 @@ namespace network_socket
             }
         }
 
-        bool Socket::isSocketConnected(void)
+        bool Socket::isSocketConnected(void) const
         {
-		    return m_isSocketConnected;
+			return m_isSocketConnected;
         }
 
-        bool Socket::isSocketOpen(void)
+        bool Socket::isSocketOpen(void) const
         {
-            return m_socket.is_open();
+			return m_socket.is_open();
         }
 
         OperationStatus Socket::read(std::string &t_message, const uint16_t &t_timeoutLimit, const size_t &t_maxSize, const size_t &t_minSize)
