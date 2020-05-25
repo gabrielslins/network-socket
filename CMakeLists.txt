@@ -64,6 +64,12 @@ endif()
 # Include public headers directory
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
+# Set variables related to TCP public headers
+set(TCP_PUBLIC_HEADERS_DIR "${PROJECT_SOURCE_DIR}/include/network_socket/tcp")
+set(TCP_PUBLIC_HEADERS "${TCP_PUBLIC_HEADERS_DIR}/client.hpp"
+                       "${TCP_PUBLIC_HEADERS_DIR}/server.hpp"
+                       "${TCP_PUBLIC_HEADERS_DIR}/socket.hpp")
+
 # Add project modules subdirectories
 add_subdirectory(src/tcp_socket)
 add_subdirectory(src/tcp_client)

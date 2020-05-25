@@ -2,7 +2,7 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Collect header and source files into variables
-set(TCP_SOCKET_HEADERS "")
+set(TCP_SOCKET_HEADERS "${TCP_PUBLIC_HEADERS}")
 set(TCP_SOCKET_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/socket.cpp")
 
 # Create static or shared libraries with the listed sources collected in the variables
