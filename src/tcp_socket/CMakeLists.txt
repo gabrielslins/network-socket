@@ -12,6 +12,9 @@ else()
         add_library(netsock_tcp_socket STATIC ${TCP_SOCKET_SOURCES} ${TCP_SOCKET_HEADERS})
 endif()
 
+# Set up pre-compiled headers
+target_precompile_headers(netsock_tcp_socket PRIVATE ${TCP_PRECOMPILED_HEADERS})
+
 # Link the libraries
 target_link_libraries(netsock_tcp_socket ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY})
 
