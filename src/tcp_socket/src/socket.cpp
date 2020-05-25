@@ -23,27 +23,48 @@ namespace network_socket
 
         OperationStatus Socket::getLocalEndpoint(Endpoint &t_endpoint)
         {
-            t_endpoint =
-		    {
-                .address = m_socket.local_endpoint().address().to_string(),
-                .port = m_socket.local_endpoint().port()
-		    };
+            if (m_socket.is_open())
+            {
+                t_endpoint =
+                {
+                    .address = m_socket.local_endpoint().address().to_string(),
+                    .port = m_socket.local_endpoint().port()
+                };
 
-		    return OperationStatus{true, ""};
+                return OperationStatus{true, ""};
+            }
+            else
+            {
+                return OperationStatus{false, "Socket closed!"};
+            }
         }
 
         OperationStatus Socket::getLocalEndpointAddress(std::string &t_address)
         {
-            t_address = m_socket.local_endpoint().address().to_string();
+            if (m_socket.is_open())
+            {
+                t_address = m_socket.local_endpoint().address().to_string();
 
-            return OperationStatus{true, ""};
+                return OperationStatus{true, ""};
+            }
+            else
+            {
+                return OperationStatus{false, "Socket closed!"};
+            }
         }
 
         OperationStatus Socket::getLocalEndpointPort(unsigned int &t_port)
         {
-            t_port = m_socket.local_endpoint().port();
+            if (m_socket.is_open())
+            {
+                t_port = m_socket.local_endpoint().port();
 
-            return OperationStatus{true, ""};
+                return OperationStatus{true, ""};
+            }
+            else
+            {
+                return OperationStatus{false, "Socket closed!"};
+            }
         }
 
         OperationStatus Socket::getRemoteEndpoint(Endpoint &t_endpoint)
@@ -129,6 +150,11 @@ namespace network_socket
 			}
 			catch (std::exception &e)
 			{
+			    if (!m_socket.is_open())
+                {
+			        m_isSocketConnected = false;
+                }
+
 				return OperationStatus{false, e.what()};
 			}
 		}
@@ -173,7 +199,12 @@ namespace network_socket
 			}
 			catch (std::exception &e)
 			{
-				return OperationStatus{false, e.what()};
+                if (!m_socket.is_open())
+                {
+                    m_isSocketConnected = false;
+                }
+
+                return OperationStatus{false, e.what()};
 			}
 		}
 
@@ -213,7 +244,12 @@ namespace network_socket
 			}
 			catch (std::exception &e)
 			{
-				return OperationStatus{false, e.what()};
+                if (!m_socket.is_open())
+                {
+                    m_isSocketConnected = false;
+                }
+
+                return OperationStatus{false, e.what()};
 			}
 		}
 

@@ -57,7 +57,12 @@ namespace network_socket
 			}
 			catch (std::exception &e)
 			{
-				return OperationStatus{false, e.what()};
+                if (!m_socket.is_open())
+                {
+                    m_isSocketConnected = false;
+                }
+
+                return OperationStatus{false, e.what()};
 			}
 		}
 
