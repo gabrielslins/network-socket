@@ -38,6 +38,8 @@ namespace network_socket
             OperationStatus getRemoteEndpoint(Endpoint &t_endpoint);
             OperationStatus getRemoteEndpointAddress(std::string &t_address);
             OperationStatus getRemoteEndpointPort(unsigned int &t_port);
+            bool isSocketConnected(void);
+            bool isSocketOpen(void);
 			OperationStatus read(std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT, const size_t &t_maxSize = DEFAULT_REC_MSG_MAX_SIZE, const size_t &t_minSize = DEFAULT_REC_MSG_MIN_SIZE);
 			OperationStatus readLine(std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
 			OperationStatus write(const std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);

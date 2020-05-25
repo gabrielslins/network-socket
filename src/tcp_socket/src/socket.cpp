@@ -113,7 +113,17 @@ namespace network_socket
             }
         }
 
-		OperationStatus Socket::read(std::string &t_message, const uint16_t &t_timeoutLimit, const size_t &t_maxSize, const size_t &t_minSize)
+        bool Socket::isSocketConnected(void)
+        {
+		    return m_isSocketConnected;
+        }
+
+        bool Socket::isSocketOpen(void)
+        {
+            return m_socket.is_open();
+        }
+
+        OperationStatus Socket::read(std::string &t_message, const uint16_t &t_timeoutLimit, const size_t &t_maxSize, const size_t &t_minSize)
 		{
 			try
 			{
