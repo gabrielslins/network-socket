@@ -78,3 +78,18 @@ if(BUILD_EXAMPLES)
     add_subdirectory(examples/tcp_client)
     add_subdirectory(examples/tcp_server)
 endif(BUILD_EXAMPLES)
+
+# Check if shared or static libraries will be built
+if(BUILD_SHARED_LIBS)
+    # Status message
+    message(STATUS "Shared libraries will be built")
+
+    # Create 'bin' directory in root if it doesn't exist already
+    add_custom_target(build-time-make-bin-directory ALL COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_SOURCE_DIR}/bin)
+else()
+    # Status message
+    message(STATUS "Static libraries will be built")
+
+    # Create 'lib' directory in root if it doesn't exist already
+    add_custom_target(build-time-make-lib-directory ALL COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_SOURCE_DIR}/lib)
+endif()
