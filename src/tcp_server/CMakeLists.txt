@@ -3,7 +3,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Collect header and source files into variables
 set(TCP_SERVER_HEADERS "")
-set(TCP_SERVER_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/client.cpp")
+set(TCP_SERVER_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/server.cpp")
 
 # Create shared libraries with the listed sources collected in the variables
 add_library(netsock_tcp_server SHARED ${TCP_SERVER_SOURCES} ${TCP_SERVER_HEADERS})
