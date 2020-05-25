@@ -19,34 +19,46 @@ namespace network_socket
 		{
 			try
 			{
-				if (!m_isSocketConnected)
+			    //
+                if (!isSocketOpen())
+                {
+                    OperationStatus opStatus = openSocket();
+
+                    if (!opStatus.success)
+                    {
+                        return opStatus;
+                    }
+                }
+
+                //
+			    if (!m_isSocketConnected)
 				{
-					// 
+					//
 					boost::asio::ip::tcp::resolver::query query(t_address, std::to_string(t_port));
 					boost::asio::ip::tcp::resolver::iterator iter = boost::asio::ip::tcp::resolver(m_ioContext).resolve(query);
 
-					// 
+					//
 					m_deadlineTimer.expires_from_now(boost::posix_time::seconds(t_timeoutLimit));
 
-					// 
+					//
 					boost::system::error_code errorCode = boost::asio::error::would_block;
 
-					// 
+					//
 					boost::asio::async_connect(m_socket, iter, boost::lambda::var(errorCode) = boost::lambda::_1);
 
-					// 
+					//
 					do
 					{
 						m_ioContext.run_one();
 					} while (errorCode == boost::asio::error::would_block);
 
-					// 
-					if (errorCode || !m_socket.is_open())
+					//
+					if (errorCode || !isSocketOpen())
 					{
 						throw boost::system::system_error(errorCode ? errorCode : boost::asio::error::operation_aborted);
 					}
 
-					// 
+					//
 					m_isSocketConnected = true;
 					return OperationStatus{true, ""};
 				}
@@ -57,9 +69,11 @@ namespace network_socket
 			}
 			catch (std::exception &e)
 			{
-                if (!m_socket.is_open())
+                if (!isSocketOpen())
                 {
                     m_isSocketConnected = false;
+
+                    openSocket();
                 }
 
                 return OperationStatus{false, e.what()};

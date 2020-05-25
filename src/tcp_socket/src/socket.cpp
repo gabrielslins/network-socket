@@ -23,7 +23,7 @@ namespace network_socket
 
         OperationStatus Socket::getLocalEndpoint(Endpoint &t_endpoint) const
         {
-            if (m_socket.is_open())
+            if (isSocketOpen())
             {
                 t_endpoint =
                 {
@@ -41,7 +41,7 @@ namespace network_socket
 
         OperationStatus Socket::getLocalEndpointAddress(std::string &t_address) const
         {
-            if (m_socket.is_open())
+            if (isSocketOpen())
             {
                 t_address = m_socket.local_endpoint().address().to_string();
 
@@ -55,7 +55,7 @@ namespace network_socket
 
         OperationStatus Socket::getLocalEndpointPort(unsigned int &t_port) const
         {
-            if (m_socket.is_open())
+            if (isSocketOpen())
             {
                 t_port = m_socket.local_endpoint().port();
 
@@ -123,6 +123,34 @@ namespace network_socket
 			return m_socket.is_open();
         }
 
+        OperationStatus Socket::openSocket(void)
+        {
+            try
+            {
+                if (!isSocketOpen())
+                {
+                    boost::system::error_code errorCode;
+
+                    m_socket.open(boost::asio::ip::tcp::v4(), errorCode);
+
+                    if (errorCode)
+                    {
+                        throw boost::system::system_error(errorCode);
+                    }
+
+                    return OperationStatus{true, ""};
+                }
+                else
+                {
+                    return OperationStatus{false, "Socket is already open"};
+                }
+            }
+            catch (std::exception &e)
+            {
+                return OperationStatus{false, e.what()};
+            }
+        }
+
         OperationStatus Socket::read(std::string &t_message, const uint16_t &t_timeoutLimit, const size_t &t_maxSize, const size_t &t_minSize)
 		{
 			try
@@ -160,9 +188,11 @@ namespace network_socket
 			}
 			catch (std::exception &e)
 			{
-			    if (!m_socket.is_open())
+			    if (!isSocketOpen())
                 {
 			        m_isSocketConnected = false;
+
+                    openSocket();
                 }
 
 				return OperationStatus{false, e.what()};
@@ -209,9 +239,11 @@ namespace network_socket
 			}
 			catch (std::exception &e)
 			{
-                if (!m_socket.is_open())
+                if (!isSocketOpen())
                 {
                     m_isSocketConnected = false;
+
+                    openSocket();
                 }
 
                 return OperationStatus{false, e.what()};
@@ -254,9 +286,11 @@ namespace network_socket
 			}
 			catch (std::exception &e)
 			{
-                if (!m_socket.is_open())
+                if (!isSocketOpen())
                 {
                     m_isSocketConnected = false;
+
+                    openSocket();
                 }
 
                 return OperationStatus{false, e.what()};

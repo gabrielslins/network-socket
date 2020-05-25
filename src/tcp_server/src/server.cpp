@@ -19,6 +19,8 @@ namespace network_socket
 		{
 			try
 			{
+			    // TODO: Check if socket is open
+
 				if (!m_isSocketConnected)
 				{
 					// 
@@ -45,9 +47,11 @@ namespace network_socket
 			}
 			catch (std::exception &e)
 			{
-                if (!m_socket.is_open())
+                if (!isSocketOpen())
                 {
                     m_isSocketConnected = false;
+
+                    openSocket();
                 }
 
                 return OperationStatus{false, e.what()};
@@ -64,7 +68,7 @@ namespace network_socket
 		void Server::acceptHandler(const boost::system::error_code &t_errorCode)
 		{
 			// 
-			if (t_errorCode || !m_socket.is_open())
+			if (t_errorCode || !isSocketOpen())
 			{
 				throw boost::system::system_error(t_errorCode ? t_errorCode : boost::asio::error::operation_aborted);
 			}
