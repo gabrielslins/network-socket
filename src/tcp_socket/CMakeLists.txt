@@ -5,8 +5,12 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(TCP_SOCKET_HEADERS "")
 set(TCP_SOCKET_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/socket.cpp")
 
-# Create shared libraries with the listed sources collected in the variables
-add_library(netsock_tcp_socket SHARED ${TCP_SOCKET_SOURCES} ${TCP_SOCKET_HEADERS})
+# Create static or shared libraries with the listed sources collected in the variables
+if (BUILD_SHARED_LIBS)
+        add_library(netsock_tcp_socket SHARED ${TCP_SOCKET_SOURCES} ${TCP_SOCKET_HEADERS})
+else()
+        add_library(netsock_tcp_socket STATIC ${TCP_SOCKET_SOURCES} ${TCP_SOCKET_HEADERS})
+endif()
 
 # Link the libraries
 target_link_libraries(netsock_tcp_socket ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY})

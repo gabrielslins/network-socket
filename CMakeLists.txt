@@ -4,12 +4,16 @@ cmake_minimum_required(VERSION 3.16)
 # Project name
 project(network-socket)
 
-# Set default install path
-set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}" CACHE PATH "Default install path" FORCE)
-# set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/install" CACHE PATH "Default install path")
+# Project options
+option(BUILD_EXAMPLES "Build examples" OFF)
+option(BUILD_SHARED_LIBS "Build shared libs" ON)
 
 # Turn on the ability to create folders to organize projects
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+# Set default static and shared libraries output path
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib" CACHE PATH "Default static libraries output path")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin" CACHE PATH "Default shared libraries output path")
 
 # Add to path folder containing Find<package>.cmake files
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
@@ -65,9 +69,7 @@ add_subdirectory(src/tcp_socket)
 add_subdirectory(src/tcp_client)
 add_subdirectory(src/tcp_server)
 
-# Option to build examples
-option(BUILD_EXAMPLES "Build examples" OFF)
-
+# Build examples if option is on
 if(BUILD_EXAMPLES)
     # Status message
     message(STATUS "Examples will be built")
