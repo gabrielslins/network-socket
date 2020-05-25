@@ -2,7 +2,7 @@
 #include <iostream>
 
 // 
-#include "network_socket/tcp/server.hpp"
+#include "network_socket/tcp/client.hpp"
 
 int main(void)
 {
