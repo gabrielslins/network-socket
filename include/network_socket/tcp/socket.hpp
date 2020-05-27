@@ -45,12 +45,18 @@ namespace network_socket
 			virtual ~Socket(void);
 
 			void disconnect(void);
-            OperationStatus getLocalEndpoint(Endpoint &t_endpoint) const;
-            OperationStatus getLocalEndpointAddress(std::string &t_address) const;
-            OperationStatus getLocalEndpointPort(unsigned int &t_port) const;
-            OperationStatus getRemoteEndpoint(Endpoint &t_endpoint) const;
-            OperationStatus getRemoteEndpointAddress(std::string &t_address) const;
-            OperationStatus getRemoteEndpointPort(unsigned int &t_port) const;
+            Endpoint getLocalEndpoint(void) const;
+            Endpoint getLocalEndpoint(OperationStatus &t_opStatus) const;
+            std::string getLocalEndpointAddress(void) const;
+            std::string getLocalEndpointAddress(OperationStatus &t_opStatus) const;
+            unsigned int getLocalEndpointPort(void) const;
+            unsigned int getLocalEndpointPort(OperationStatus &t_opStatus) const;
+            Endpoint getRemoteEndpoint(void) const;
+            Endpoint getRemoteEndpoint(OperationStatus &t_opStatus) const;
+            std::string getRemoteEndpointAddress(void) const;
+            std::string getRemoteEndpointAddress(OperationStatus &t_opStatus) const;
+            unsigned int getRemoteEndpointPort(void) const;
+            unsigned int getRemoteEndpointPort(OperationStatus &t_opStatus) const;
             bool isSocketConnected(void) const;
             bool isSocketOpen(void) const;
             OperationStatus openSocket(void);

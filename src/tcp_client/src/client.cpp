@@ -64,10 +64,7 @@ namespace network_socket
 				}
 				else
 				{
-					Endpoint endpoint;
-					getRemoteEndpoint(endpoint);
-
-					if (endpoint.address == t_address && endpoint.port == t_port)
+					if (getRemoteEndpointAddress() == t_address && getRemoteEndpointPort() == t_port)
 					{
 						return OperationStatus{true, StatusCode::SOCKET_ALREADY_CONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_ALREADY_CONNECTED]};
 					}

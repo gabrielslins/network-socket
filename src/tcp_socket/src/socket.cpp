@@ -31,96 +31,162 @@ namespace network_socket
 			m_isSocketConnected = false;
 		}
 
-        OperationStatus Socket::getLocalEndpoint(Endpoint &t_endpoint) const
+        Endpoint Socket::getLocalEndpoint(void) const
         {
+            OperationStatus opStatus;
+
+            return getLocalEndpoint(opStatus);
+        }
+
+        Endpoint Socket::getLocalEndpoint(OperationStatus &t_opStatus) const
+        {
+		    Endpoint endpoint = {"", 0};
+
             if (isSocketOpen())
             {
-                t_endpoint =
+                endpoint =
                 {
                     .address = m_socket.local_endpoint().address().to_string(),
                     .port = m_socket.local_endpoint().port()
                 };
 
-                return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
             }
             else
             {
-                return OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_CLOSED]};
+                t_opStatus = OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_CLOSED]};
             }
+
+            return endpoint;
         }
 
-        OperationStatus Socket::getLocalEndpointAddress(std::string &t_address) const
+        std::string Socket::getLocalEndpointAddress(void) const
         {
+            OperationStatus opStatus;
+
+            return getLocalEndpointAddress(opStatus);
+        }
+
+        std::string Socket::getLocalEndpointAddress(OperationStatus &t_opStatus) const
+        {
+            std::string address = "";
+
             if (isSocketOpen())
             {
-                t_address = m_socket.local_endpoint().address().to_string();
+                address = m_socket.local_endpoint().address().to_string();
 
-                return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
             }
             else
             {
-                return OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_CLOSED]};
+                t_opStatus = OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_CLOSED]};
             }
+
+            return address;
         }
 
-        OperationStatus Socket::getLocalEndpointPort(unsigned int &t_port) const
+        unsigned int Socket::getLocalEndpointPort(void) const
         {
+            OperationStatus opStatus;
+
+            return getLocalEndpointPort(opStatus);
+        }
+
+        unsigned int Socket::getLocalEndpointPort(OperationStatus &t_opStatus) const
+        {
+		    unsigned int port = 0;
+
             if (isSocketOpen())
             {
-                t_port = m_socket.local_endpoint().port();
+                port = m_socket.local_endpoint().port();
 
-                return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
             }
             else
             {
-                return OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_CLOSED]};
+                t_opStatus = OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_CLOSED]};
             }
+
+            return port;
         }
 
-        OperationStatus Socket::getRemoteEndpoint(Endpoint &t_endpoint) const
+        Endpoint Socket::getRemoteEndpoint(void) const
         {
+            OperationStatus opStatus;
+
+            return getRemoteEndpoint(opStatus);
+        }
+
+        Endpoint Socket::getRemoteEndpoint(OperationStatus &t_opStatus) const
+        {
+            Endpoint endpoint = {"", 0};
+
             if (m_isSocketConnected)
             {
-                t_endpoint =
+                endpoint =
                 {
                     .address = m_socket.remote_endpoint().address().to_string(),
                     .port = m_socket.remote_endpoint().port()
                 };
 
-                return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
-            }
-		    else
-            {
-                return OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
-            }
-        }
-
-        OperationStatus Socket::getRemoteEndpointAddress(std::string &t_address) const
-        {
-            if (m_isSocketConnected)
-            {
-                t_address = m_socket.remote_endpoint().address().to_string();
-
-                return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
             }
             else
             {
-                return OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
+                t_opStatus = OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
             }
+
+            return endpoint;
         }
 
-        OperationStatus Socket::getRemoteEndpointPort(unsigned int &t_port) const
+        std::string Socket::getRemoteEndpointAddress(void) const
         {
+            OperationStatus opStatus;
+
+            return getRemoteEndpointAddress(opStatus);
+        }
+
+        std::string Socket::getRemoteEndpointAddress(OperationStatus &t_opStatus) const
+        {
+            std::string address = "";
+
             if (m_isSocketConnected)
             {
-                t_port = m_socket.remote_endpoint().port();
+                address = m_socket.remote_endpoint().address().to_string();
 
-                return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
             }
             else
             {
-                return OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
+                t_opStatus = OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
             }
+
+            return address;
+        }
+
+        unsigned int Socket::getRemoteEndpointPort(void) const
+        {
+            OperationStatus opStatus;
+
+            return getRemoteEndpointPort(opStatus);
+        }
+
+        unsigned int Socket::getRemoteEndpointPort(OperationStatus &t_opStatus) const
+        {
+            unsigned int port = 0;
+
+            if (m_isSocketConnected)
+            {
+                port = m_socket.remote_endpoint().port();
+
+                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+            }
+            else
+            {
+                t_opStatus = OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
+            }
+
+            return port;
         }
 
         bool Socket::isSocketConnected(void) const
