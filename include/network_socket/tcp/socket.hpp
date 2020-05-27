@@ -13,9 +13,22 @@ namespace network_socket
 {
 	namespace tcp
 	{
+		enum class StatusCode
+		{
+			NO_ERROR = 0,
+			BOOST_ERROR = 1,
+			SOCKET_CLOSED = 2,
+			SOCKET_DISCONNECTED = 3,
+			SOCKET_ALREADY_OPEN = 4,
+			SOCKET_ALREADY_CONNECTED = 5,
+
+			STATUS_CODE_TOTAL
+		};
+
 		struct OperationStatus
 		{
 			bool success;
+			StatusCode statusCode;
 			std::string message;
 		};
 
@@ -55,6 +68,8 @@ namespace network_socket
             boost::asio::io_context m_ioContext;
             boost::asio::ip::tcp::socket m_socket;
             boost::asio::deadline_timer m_deadlineTimer;
+
+			static const std::string m_STATUS_CODE_MSG[(uint16_t)StatusCode::STATUS_CODE_TOTAL];
 		};
 	}
 }

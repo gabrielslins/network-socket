@@ -60,11 +60,21 @@ namespace network_socket
 
 					//
 					m_isSocketConnected = true;
-					return OperationStatus{true, ""};
+					return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
 				}
 				else
 				{
-					return OperationStatus{false, "Socket already connected"};
+					Endpoint endpoint;
+					getRemoteEndpoint(endpoint);
+
+					if (endpoint.address == t_address && endpoint.port == t_port)
+					{
+						return OperationStatus{true, StatusCode::SOCKET_ALREADY_CONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_ALREADY_CONNECTED]};
+					}
+					else 
+					{
+						return OperationStatus{false, StatusCode::SOCKET_ALREADY_CONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_ALREADY_CONNECTED]};
+					}
 				}
 			}
 			catch (std::exception &e)
@@ -76,7 +86,7 @@ namespace network_socket
                     openSocket();
                 }
 
-                return OperationStatus{false, e.what()};
+                return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
 			}
 		}
 

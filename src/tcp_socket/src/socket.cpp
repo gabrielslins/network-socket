@@ -4,6 +4,16 @@ namespace network_socket
 {
 	namespace tcp
 	{
+		const std::string Socket::m_STATUS_CODE_MSG[] =
+		{
+			"",
+			"Boost error",
+			"Socket closed",
+			"Socket not connected",
+			"Socket already open",
+			"Socket already connected"
+		};
+
 		Socket::Socket(void) : m_ongoingRead(false), m_isSocketConnected(false), m_socket(m_ioContext), m_deadlineTimer(m_ioContext)
 		{
 			// 
@@ -31,11 +41,11 @@ namespace network_socket
                     .port = m_socket.local_endpoint().port()
                 };
 
-                return OperationStatus{true, ""};
+                return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
             }
             else
             {
-                return OperationStatus{false, "Socket closed!"};
+                return OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_CLOSED]};
             }
         }
 
@@ -45,11 +55,11 @@ namespace network_socket
             {
                 t_address = m_socket.local_endpoint().address().to_string();
 
-                return OperationStatus{true, ""};
+                return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
             }
             else
             {
-                return OperationStatus{false, "Socket closed!"};
+                return OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_CLOSED]};
             }
         }
 
@@ -59,11 +69,11 @@ namespace network_socket
             {
                 t_port = m_socket.local_endpoint().port();
 
-                return OperationStatus{true, ""};
+                return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
             }
             else
             {
-                return OperationStatus{false, "Socket closed!"};
+                return OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_CLOSED]};
             }
         }
 
@@ -77,11 +87,11 @@ namespace network_socket
                     .port = m_socket.remote_endpoint().port()
                 };
 
-                return OperationStatus{true, ""};
+                return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
             }
 		    else
             {
-                return OperationStatus{false, "Socket not connected!"};
+                return OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
             }
         }
 
@@ -91,11 +101,11 @@ namespace network_socket
             {
                 t_address = m_socket.remote_endpoint().address().to_string();
 
-                return OperationStatus{true, ""};
+                return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
             }
             else
             {
-                return OperationStatus{false, "Socket not connected!"};
+                return OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
             }
         }
 
@@ -105,11 +115,11 @@ namespace network_socket
             {
                 t_port = m_socket.remote_endpoint().port();
 
-                return OperationStatus{true, ""};
+                return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
             }
             else
             {
-                return OperationStatus{false, "Socket not connected!"};
+                return OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
             }
         }
 
@@ -138,16 +148,16 @@ namespace network_socket
                         throw boost::system::system_error(errorCode);
                     }
 
-                    return OperationStatus{true, ""};
+                    return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
                 }
                 else
                 {
-                    return OperationStatus{false, "Socket is already open"};
+                    return OperationStatus{true, StatusCode::SOCKET_ALREADY_OPEN, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_ALREADY_OPEN]};
                 }
             }
             catch (std::exception &e)
             {
-                return OperationStatus{false, e.what()};
+                return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
             }
         }
 
@@ -179,11 +189,11 @@ namespace network_socket
 					t_message = std::string((std::istreambuf_iterator<char>(&buffer)), std::istreambuf_iterator<char>());
 
 					// 
-					return OperationStatus{true, ""};
+					return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
 				}
 				else
 				{
-					return OperationStatus{false, "Socket not connected"};
+					return OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
 				}
 			}
 			catch (std::exception &e)
@@ -195,7 +205,7 @@ namespace network_socket
                     openSocket();
                 }
 
-				return OperationStatus{false, e.what()};
+				return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
 			}
 		}
 
@@ -230,11 +240,11 @@ namespace network_socket
 					std::getline(is, t_message);
 
 					// 
-					return OperationStatus{true, ""};
+					return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
 				}
 				else
 				{
-					return OperationStatus{false, "Socket not connected"};
+					return OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
 				}
 			}
 			catch (std::exception &e)
@@ -246,7 +256,7 @@ namespace network_socket
                     openSocket();
                 }
 
-                return OperationStatus{false, e.what()};
+                return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
 			}
 		}
 
@@ -277,11 +287,11 @@ namespace network_socket
 					}
 
 					// 
-					return OperationStatus{true, ""};
+					return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
 				}
 				else
 				{
-					return OperationStatus{false, "Socket not connected"};
+					return OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
 				}
 			}
 			catch (std::exception &e)
@@ -293,7 +303,7 @@ namespace network_socket
                     openSocket();
                 }
 
-                return OperationStatus{false, e.what()};
+                return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
 			}
 		}
 
