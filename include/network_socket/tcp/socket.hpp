@@ -43,7 +43,7 @@ namespace network_socket
 			Socket(void);
 			virtual ~Socket(void);
 
-			void disconnect(void);
+            OperationStatus disconnect(void);
             Endpoint getLocalEndpoint(void);
             Endpoint getLocalEndpoint(OperationStatus &t_opStatus);
             std::string getLocalEndpointAddress(void);

@@ -24,10 +24,19 @@ namespace network_socket
 			disconnect();
 		}
 
-		void Socket::disconnect(void)
+        OperationStatus Socket::disconnect(void)
 		{
-			m_socket.close();
-			m_isSocketConnected = false;
+		    try
+            {
+                m_socket.close();
+                m_isSocketConnected = false;
+
+                return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+			}
+            catch (std::exception &e)
+            {
+                return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
+            }
 		}
 
         Endpoint Socket::getLocalEndpoint(void)
