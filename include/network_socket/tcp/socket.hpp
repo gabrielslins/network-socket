@@ -57,10 +57,14 @@ namespace network_socket
             unsigned int getRemoteEndpointPort(void);
             unsigned int getRemoteEndpointPort(OperationStatus &t_opStatus);
             bool isSocketConnected(void);
-			OperationStatus read(std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT, const size_t &t_maxSize = DEFAULT_REC_MSG_MAX_SIZE, const size_t &t_minSize = DEFAULT_REC_MSG_MIN_SIZE);
-			OperationStatus readLine(std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
-			OperationStatus write(const std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
-			OperationStatus writeLine(const std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
+            std::string read(const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT, const size_t &t_maxSize = DEFAULT_REC_MSG_MAX_SIZE, const size_t &t_minSize = DEFAULT_REC_MSG_MIN_SIZE);
+            std::string read(OperationStatus &t_opStatus, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT, const size_t &t_maxSize = DEFAULT_REC_MSG_MAX_SIZE, const size_t &t_minSize = DEFAULT_REC_MSG_MIN_SIZE);
+            std::string readLine(const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
+            std::string readLine(OperationStatus &t_opStatus, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
+			void write(const std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
+            void write(OperationStatus &t_opStatus, const std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
+			void writeLine(const std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
+            void writeLine(OperationStatus &t_opStatus, const std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
 
 		protected:
 			virtual void checkDeadline(void) = 0;

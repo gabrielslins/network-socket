@@ -252,50 +252,72 @@ namespace network_socket
 			return m_isSocketConnected;
         }
 
-        OperationStatus Socket::read(std::string &t_message, const uint16_t &t_timeoutLimit, const size_t &t_maxSize, const size_t &t_minSize)
+        std::string Socket::read(const uint16_t &t_timeoutLimit, const size_t &t_maxSize, const size_t &t_minSize)
+        {
+            OperationStatus opStatus;
+
+            return read(opStatus, t_timeoutLimit, t_maxSize, t_minSize);
+        }
+
+		std::string Socket::read(OperationStatus &t_opStatus, const uint16_t &t_timeoutLimit, const size_t &t_maxSize, const size_t &t_minSize)
 		{
 			try
 			{
 				if (isSocketConnected())
 				{
-					// 
+					//
 					m_deadlineTimer.expires_from_now(boost::posix_time::seconds(t_timeoutLimit));
 
-					// 
+					//
 					m_ongoingRead = true;
-					
+
 					boost::asio::streambuf buffer;
 					boost::asio::streambuf::mutable_buffers_type mutableBuffer = buffer.prepare(t_maxSize);
 
 					boost::asio::async_read(m_socket, mutableBuffer, boost::asio::transfer_at_least(t_minSize),
 						boost::bind(&Socket::readHandler, this, boost::asio::placeholders::error, &buffer, boost::asio::placeholders::bytes_transferred));
 
-					// 
+					//
 					do
 					{
 						m_ioContext.run_one();
 					} while (m_ongoingRead);
 
-					// 
-					t_message = std::string((std::istreambuf_iterator<char>(&buffer)), std::istreambuf_iterator<char>());
+					//
+                    t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
 
-					// 
-					return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                    //
+                    return std::string((std::istreambuf_iterator<char>(&buffer)), std::istreambuf_iterator<char>());
 				}
 				else
 				{
-					return OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
+				    //
+                    t_opStatus = OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
+
+                    //
+                    return "";
 				}
 			}
 			catch (std::exception &e)
 			{
 			    disconnect();
 
-				return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
+                //
+                t_opStatus = OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
+
+                //
+                return "";
 			}
 		}
 
-		OperationStatus Socket::readLine(std::string &t_message, const uint16_t &t_timeoutLimit)
+        std::string Socket::readLine(const uint16_t &t_timeoutLimit)
+        {
+            OperationStatus opStatus;
+
+            return read(opStatus, t_timeoutLimit);
+        }
+
+        std::string Socket::readLine(OperationStatus &t_opStatus, const uint16_t &t_timeoutLimit)
 		{
 			try
 			{
@@ -323,25 +345,44 @@ namespace network_socket
 					}
 
 					std::istream is(&buffer);
-					std::getline(is, t_message);
+                    std::string message;
+                    std::getline(is, message);
 
-					// 
-					return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                    //
+                    t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+
+                    //
+                    return message;
 				}
 				else
 				{
-					return OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
+                    //
+                    t_opStatus = OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
+
+                    //
+                    return "";
 				}
 			}
 			catch (std::exception &e)
 			{
                 disconnect();
 
-                return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
+                //
+                t_opStatus = OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
+
+                //
+                return "";
 			}
 		}
 
-		OperationStatus Socket::write(const std::string &t_message, const uint16_t &t_timeoutLimit)
+        void Socket::write(const std::string &t_message, const uint16_t &t_timeoutLimit)
+        {
+            OperationStatus opStatus;
+
+            return write(opStatus, t_message, t_timeoutLimit);
+        }
+
+        void Socket::write(OperationStatus &t_opStatus, const std::string &t_message, const uint16_t &t_timeoutLimit)
 		{
 			try
 			{
@@ -368,24 +409,29 @@ namespace network_socket
 					}
 
 					// 
-					return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                    t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
 				}
 				else
 				{
-					return OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
+                    t_opStatus = OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
 				}
 			}
 			catch (std::exception &e)
 			{
                 disconnect();
 
-                return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
+                t_opStatus = OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
 			}
 		}
 
-		OperationStatus Socket::writeLine(const std::string &t_message, const uint16_t &t_timeoutLimit)
+        void Socket::writeLine(const std::string &t_message, const uint16_t &t_timeoutLimit)
+        {
+            write(t_message + "\n", t_timeoutLimit);
+        }
+
+        void Socket::writeLine(OperationStatus &t_opStatus, const std::string &t_message, const uint16_t &t_timeoutLimit)
 		{
-			return write(t_message + "\n", t_timeoutLimit);
+			write(t_opStatus, t_message + "\n", t_timeoutLimit);
 		}
 
 		void Socket::checkDeadline(void)
