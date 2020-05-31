@@ -22,9 +22,9 @@ namespace network_socket
 			    //
                 if (!isSocketOpen())
                 {
-                    OperationStatus opStatus = openSocket();
+                    OperationStatus opStatus;
 
-                    if (!opStatus.success)
+                    if (!openSocket(opStatus))
                     {
                         return opStatus;
                     }
@@ -76,12 +76,7 @@ namespace network_socket
 			}
 			catch (std::exception &e)
 			{
-                if (!isSocketOpen())
-                {
-                    m_isSocketConnected = false;
-
-                    openSocket();
-                }
+                disconnect();
 
                 return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
 			}

@@ -19,8 +19,7 @@ namespace network_socket
 			BOOST_ERROR = 1,
 			SOCKET_CLOSED = 2,
 			SOCKET_DISCONNECTED = 3,
-			SOCKET_ALREADY_OPEN = 4,
-			SOCKET_ALREADY_CONNECTED = 5,
+			SOCKET_ALREADY_CONNECTED = 4,
 
 			STATUS_CODE_TOTAL
 		};
@@ -45,21 +44,19 @@ namespace network_socket
 			virtual ~Socket(void);
 
 			void disconnect(void);
-            Endpoint getLocalEndpoint(void) const;
-            Endpoint getLocalEndpoint(OperationStatus &t_opStatus) const;
-            std::string getLocalEndpointAddress(void) const;
-            std::string getLocalEndpointAddress(OperationStatus &t_opStatus) const;
-            unsigned int getLocalEndpointPort(void) const;
-            unsigned int getLocalEndpointPort(OperationStatus &t_opStatus) const;
-            Endpoint getRemoteEndpoint(void) const;
-            Endpoint getRemoteEndpoint(OperationStatus &t_opStatus) const;
-            std::string getRemoteEndpointAddress(void) const;
-            std::string getRemoteEndpointAddress(OperationStatus &t_opStatus) const;
-            unsigned int getRemoteEndpointPort(void) const;
-            unsigned int getRemoteEndpointPort(OperationStatus &t_opStatus) const;
-            bool isSocketConnected(void) const;
-            bool isSocketOpen(void) const;
-            OperationStatus openSocket(void);
+            Endpoint getLocalEndpoint(void);
+            Endpoint getLocalEndpoint(OperationStatus &t_opStatus);
+            std::string getLocalEndpointAddress(void);
+            std::string getLocalEndpointAddress(OperationStatus &t_opStatus);
+            unsigned int getLocalEndpointPort(void);
+            unsigned int getLocalEndpointPort(OperationStatus &t_opStatus);
+            Endpoint getRemoteEndpoint(void);
+            Endpoint getRemoteEndpoint(OperationStatus &t_opStatus);
+            std::string getRemoteEndpointAddress(void);
+            std::string getRemoteEndpointAddress(OperationStatus &t_opStatus);
+            unsigned int getRemoteEndpointPort(void);
+            unsigned int getRemoteEndpointPort(OperationStatus &t_opStatus);
+            bool isSocketConnected(void);
 			OperationStatus read(std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT, const size_t &t_maxSize = DEFAULT_REC_MSG_MAX_SIZE, const size_t &t_minSize = DEFAULT_REC_MSG_MIN_SIZE);
 			OperationStatus readLine(std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
 			OperationStatus write(const std::string &t_message, const uint16_t &t_timeoutLimit = DEFAULT_TIMEOUT_LIMIT);
@@ -67,6 +64,9 @@ namespace network_socket
 
 		protected:
 			virtual void checkDeadline(void) = 0;
+            bool isSocketOpen(void);
+            bool openSocket(void);
+            bool openSocket(OperationStatus &t_opStatus);
 			void readHandler(const boost::system::error_code &t_errorCode, boost::asio::streambuf *t_buffer, const std::size_t &t_bytesTransferred);
 
             bool m_ongoingRead;

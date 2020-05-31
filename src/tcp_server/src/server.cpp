@@ -19,9 +19,18 @@ namespace network_socket
 		{
 			try
 			{
-			    // TODO: Check if socket is open
+                //
+                if (!isSocketOpen())
+                {
+                    OperationStatus opStatus;
 
-				if (!m_isSocketConnected)
+                    if (!openSocket(opStatus))
+                    {
+                        return opStatus;
+                    }
+                }
+
+                if (!m_isSocketConnected)
 				{
 					// 
 					m_deadlineTimer.expires_from_now(boost::posix_time::seconds(t_timeoutLimit));
@@ -47,12 +56,7 @@ namespace network_socket
 			}
 			catch (std::exception &e)
 			{
-                if (!isSocketOpen())
-                {
-                    m_isSocketConnected = false;
-
-                    openSocket();
-                }
+                disconnect();
 
                 return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
 			}

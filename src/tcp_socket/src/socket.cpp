@@ -4,13 +4,12 @@ namespace network_socket
 {
 	namespace tcp
 	{
-		const std::string Socket::m_STATUS_CODE_MSG[] =
+        const std::string Socket::m_STATUS_CODE_MSG[] =
 		{
 			"",
 			"Boost error",
-			"Socket closed",
+			"Unable to open socket",
 			"Socket not connected",
-			"Socket already open",
 			"Socket already connected"
 		};
 
@@ -31,207 +30,233 @@ namespace network_socket
 			m_isSocketConnected = false;
 		}
 
-        Endpoint Socket::getLocalEndpoint(void) const
+        Endpoint Socket::getLocalEndpoint(void)
         {
             OperationStatus opStatus;
 
             return getLocalEndpoint(opStatus);
         }
 
-        Endpoint Socket::getLocalEndpoint(OperationStatus &t_opStatus) const
+        Endpoint Socket::getLocalEndpoint(OperationStatus &t_opStatus)
         {
 		    Endpoint endpoint = {"", 0};
 
-            if (isSocketOpen())
-            {
+		    try
+		    {
+                //
+                if (!isSocketOpen())
+                {
+                    if (!openSocket())
+                    {
+                        t_opStatus = t_opStatus = OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t) StatusCode::SOCKET_CLOSED]};
+
+                        return endpoint;
+                    }
+                }
+
+                //
                 endpoint =
                 {
                     .address = m_socket.local_endpoint().address().to_string(),
                     .port = m_socket.local_endpoint().port()
                 };
 
-                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t) StatusCode::NO_ERROR]};
             }
-            else
+            catch (std::exception &e)
             {
-                t_opStatus = OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_CLOSED]};
+                t_opStatus = OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
             }
 
             return endpoint;
         }
 
-        std::string Socket::getLocalEndpointAddress(void) const
+        std::string Socket::getLocalEndpointAddress(void)
         {
             OperationStatus opStatus;
 
             return getLocalEndpointAddress(opStatus);
         }
 
-        std::string Socket::getLocalEndpointAddress(OperationStatus &t_opStatus) const
+        std::string Socket::getLocalEndpointAddress(OperationStatus &t_opStatus)
         {
             std::string address = "";
 
-            if (isSocketOpen())
+            try
             {
+                //
+                if (!isSocketOpen())
+                {
+                    if (!openSocket())
+                    {
+                        t_opStatus = t_opStatus = OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t) StatusCode::SOCKET_CLOSED]};
+
+                        return address;
+                    }
+                }
+
+                //
                 address = m_socket.local_endpoint().address().to_string();
 
-                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t) StatusCode::NO_ERROR]};
             }
-            else
+            catch (std::exception &e)
             {
-                t_opStatus = OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_CLOSED]};
+                t_opStatus = OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
             }
 
             return address;
         }
 
-        unsigned int Socket::getLocalEndpointPort(void) const
+        unsigned int Socket::getLocalEndpointPort(void)
         {
             OperationStatus opStatus;
 
             return getLocalEndpointPort(opStatus);
         }
 
-        unsigned int Socket::getLocalEndpointPort(OperationStatus &t_opStatus) const
+        unsigned int Socket::getLocalEndpointPort(OperationStatus &t_opStatus)
         {
 		    unsigned int port = 0;
 
-            if (isSocketOpen())
+            try
             {
+                //
+                if (!isSocketOpen())
+                {
+                    if (!openSocket())
+                    {
+                        t_opStatus = t_opStatus = OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t) StatusCode::SOCKET_CLOSED]};
+
+                        return port;
+                    }
+                }
+
+                //
                 port = m_socket.local_endpoint().port();
 
-                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t) StatusCode::NO_ERROR]};
             }
-            else
+            catch (std::exception &e)
             {
-                t_opStatus = OperationStatus{false, StatusCode::SOCKET_CLOSED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_CLOSED]};
+                t_opStatus = OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
             }
 
             return port;
         }
 
-        Endpoint Socket::getRemoteEndpoint(void) const
+        Endpoint Socket::getRemoteEndpoint(void)
         {
             OperationStatus opStatus;
 
             return getRemoteEndpoint(opStatus);
         }
 
-        Endpoint Socket::getRemoteEndpoint(OperationStatus &t_opStatus) const
+        Endpoint Socket::getRemoteEndpoint(OperationStatus &t_opStatus)
         {
             Endpoint endpoint = {"", 0};
 
-            if (m_isSocketConnected)
+            try
             {
-                endpoint =
+                if (isSocketConnected())
                 {
-                    .address = m_socket.remote_endpoint().address().to_string(),
-                    .port = m_socket.remote_endpoint().port()
-                };
+                    endpoint =
+                    {
+                        .address = m_socket.remote_endpoint().address().to_string(),
+                        .port = m_socket.remote_endpoint().port()
+                    };
 
-                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                    t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                }
+                else
+                {
+                    t_opStatus = OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
+                }
             }
-            else
+            catch (std::exception &e)
             {
-                t_opStatus = OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
+                t_opStatus = OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
             }
 
             return endpoint;
         }
 
-        std::string Socket::getRemoteEndpointAddress(void) const
+        std::string Socket::getRemoteEndpointAddress(void)
         {
             OperationStatus opStatus;
 
             return getRemoteEndpointAddress(opStatus);
         }
 
-        std::string Socket::getRemoteEndpointAddress(OperationStatus &t_opStatus) const
+        std::string Socket::getRemoteEndpointAddress(OperationStatus &t_opStatus)
         {
             std::string address = "";
 
-            if (m_isSocketConnected)
+            try
             {
-                address = m_socket.remote_endpoint().address().to_string();
+                if (isSocketConnected())
+                {
+                    address = m_socket.remote_endpoint().address().to_string();
 
-                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                    t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                }
+                else
+                {
+                    t_opStatus = OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
+                }
             }
-            else
+            catch (std::exception &e)
             {
-                t_opStatus = OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
+                t_opStatus = OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
             }
 
             return address;
         }
 
-        unsigned int Socket::getRemoteEndpointPort(void) const
+        unsigned int Socket::getRemoteEndpointPort(void)
         {
             OperationStatus opStatus;
 
             return getRemoteEndpointPort(opStatus);
         }
 
-        unsigned int Socket::getRemoteEndpointPort(OperationStatus &t_opStatus) const
+        unsigned int Socket::getRemoteEndpointPort(OperationStatus &t_opStatus)
         {
             unsigned int port = 0;
 
-            if (m_isSocketConnected)
+            try
             {
-                port = m_socket.remote_endpoint().port();
+                if (isSocketConnected())
+                {
+                    port = m_socket.remote_endpoint().port();
 
-                t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                    t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                }
+                else
+                {
+                    t_opStatus = OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
+                }
             }
-            else
+            catch (std::exception &e)
             {
-                t_opStatus = OperationStatus{false, StatusCode::SOCKET_DISCONNECTED, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_DISCONNECTED]};
+                t_opStatus = OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
             }
 
             return port;
         }
 
-        bool Socket::isSocketConnected(void) const
+        bool Socket::isSocketConnected(void)
         {
+		    m_isSocketConnected &= isSocketOpen();
+
 			return m_isSocketConnected;
-        }
-
-        bool Socket::isSocketOpen(void) const
-        {
-			return m_socket.is_open();
-        }
-
-        OperationStatus Socket::openSocket(void)
-        {
-            try
-            {
-                if (!isSocketOpen())
-                {
-                    boost::system::error_code errorCode;
-
-                    m_socket.open(boost::asio::ip::tcp::v4(), errorCode);
-
-                    if (errorCode)
-                    {
-                        throw boost::system::system_error(errorCode);
-                    }
-
-                    return OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
-                }
-                else
-                {
-                    return OperationStatus{true, StatusCode::SOCKET_ALREADY_OPEN, m_STATUS_CODE_MSG[(uint16_t)StatusCode::SOCKET_ALREADY_OPEN]};
-                }
-            }
-            catch (std::exception &e)
-            {
-                return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
-            }
         }
 
         OperationStatus Socket::read(std::string &t_message, const uint16_t &t_timeoutLimit, const size_t &t_maxSize, const size_t &t_minSize)
 		{
 			try
 			{
-				if (m_isSocketConnected)
+				if (isSocketConnected())
 				{
 					// 
 					m_deadlineTimer.expires_from_now(boost::posix_time::seconds(t_timeoutLimit));
@@ -264,12 +289,7 @@ namespace network_socket
 			}
 			catch (std::exception &e)
 			{
-			    if (!isSocketOpen())
-                {
-			        m_isSocketConnected = false;
-
-                    openSocket();
-                }
+			    disconnect();
 
 				return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
 			}
@@ -279,7 +299,7 @@ namespace network_socket
 		{
 			try
 			{
-				if (m_isSocketConnected)
+				if (isSocketConnected())
 				{
 					// 
 					m_deadlineTimer.expires_from_now(boost::posix_time::seconds(t_timeoutLimit));
@@ -315,12 +335,7 @@ namespace network_socket
 			}
 			catch (std::exception &e)
 			{
-                if (!isSocketOpen())
-                {
-                    m_isSocketConnected = false;
-
-                    openSocket();
-                }
+                disconnect();
 
                 return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
 			}
@@ -330,7 +345,7 @@ namespace network_socket
 		{
 			try
 			{
-				if (m_isSocketConnected)
+				if (isSocketConnected())
 				{
 					// 
 					m_deadlineTimer.expires_from_now(boost::posix_time::seconds(t_timeoutLimit));
@@ -362,12 +377,7 @@ namespace network_socket
 			}
 			catch (std::exception &e)
 			{
-                if (!isSocketOpen())
-                {
-                    m_isSocketConnected = false;
-
-                    openSocket();
-                }
+                disconnect();
 
                 return OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
 			}
@@ -394,6 +404,48 @@ namespace network_socket
 			// 
 			m_deadlineTimer.async_wait(boost::lambda::bind(&Socket::checkDeadline, this));
 		}
+
+        bool Socket::isSocketOpen(void)
+        {
+            return m_socket.is_open();
+        }
+
+        bool Socket::openSocket(void)
+        {
+            OperationStatus opStatus;
+
+            return openSocket(opStatus);
+        }
+
+        bool Socket::openSocket(OperationStatus &t_opStatus)
+        {
+            try
+            {
+                if (!isSocketOpen())
+                {
+                    boost::system::error_code errorCode;
+
+                    m_socket.open(boost::asio::ip::tcp::v4(), errorCode);
+
+                    if (errorCode)
+                    {
+                        throw boost::system::system_error(errorCode);
+                    }
+
+                    t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                }
+                else
+                {
+                    t_opStatus = OperationStatus{true, StatusCode::NO_ERROR, m_STATUS_CODE_MSG[(uint16_t)StatusCode::NO_ERROR]};
+                }
+            }
+            catch (std::exception &e)
+            {
+                t_opStatus = OperationStatus{false, StatusCode::BOOST_ERROR, e.what()};
+            }
+
+            return t_opStatus.success;
+        }
 
 		void Socket::readHandler(const boost::system::error_code &t_errorCode, boost::asio::streambuf *buffer, const std::size_t &t_bytesTransferred)
 		{
