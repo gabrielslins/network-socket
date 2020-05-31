@@ -14,6 +14,7 @@ endif()
 
 # Link the libraries
 target_link_libraries(netsock_tcp_client ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY})
+target_link_libraries(netsock_tcp_client spdlog::spdlog)
 target_link_libraries(netsock_tcp_client optimized netsock_tcp_socket)
 target_link_libraries(netsock_tcp_client debug netsock_tcp_socket)
 

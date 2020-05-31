@@ -16,3 +16,4 @@
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/system/system_error.hpp>
+#include <spdlog/spdlog.h>

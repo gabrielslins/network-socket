@@ -17,6 +17,7 @@ target_precompile_headers(netsock_tcp_socket PRIVATE ${TCP_PRECOMPILED_HEADERS})
 
 # Link the libraries
 target_link_libraries(netsock_tcp_socket ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY})
+target_link_libraries(netsock_tcp_socket spdlog::spdlog)
 
 # Set default installation folders
 install(TARGETS netsock_tcp_socket 

@@ -65,6 +65,9 @@ if (${Boost_FOUND})
     link_directories(${Boost_LIBRARY_DIRS})
 endif()
 
+# Look for Boost required components
+find_package(spdlog 1.6 REQUIRED)
+
 # Include public headers directory
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
